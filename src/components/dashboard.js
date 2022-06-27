@@ -1,25 +1,25 @@
 import React from "react";
-import { render } from "react-dom";
-import moment from "moment";
+// import { render } from "react-dom";
+// import moment from "moment";
 import { CRYPTO_COMPARE } from "../keys";
 import { TradingViewEmbed, widgetType } from "react-tradingview-embed";
 
 import {
-  XYPlot,
-  Hint,
-  LineSeries,
+  // XYPlot,
+  // Hint,
+  // LineSeries,
   FlexibleXYPlot,
   VerticalBarSeries,
   VerticalGridLines,
   HorizontalGridLines,
   XAxis,
   YAxis,
-  AreaSeries
+  // AreaSeries
 } from "react-vis";
 
 var formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
-  currency: "USD"
+  currency: "USD",
 
   // These options are needed to round to whole numbers if that's what you want.
   //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
@@ -29,18 +29,17 @@ var formatter = new Intl.NumberFormat("en-US", {
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      times: [],
+      high: [],
+      low: [],
+      chartData: [],
+      query: "BTC",
+      leaderboard: [],
+      addressData: "",
+      symbol: "",
+    };
   }
-
-  state = {
-    times: [],
-    high: [],
-    low: [],
-    chartData: [],
-    query: "BTC",
-    leaderboard: [],
-    addressData: "",
-    symbol: ""
-  };
 
   componentDidMount() {
     this.loadChartData();
@@ -53,38 +52,36 @@ class Dashboard extends React.Component {
     const data = await response.json();
     const bulkData = data.Data.Data;
     const dataArray = [];
-    {
-      //this needs to be updated to time, active_addresses, average_transaction_value, current_supply, new_addresses,
-      // symbol, transaction_count, transaction_count_all_time
-      // bulkData.map((y) =>
-      //   dataArray.push({
-      //     time: y.time,
-      //     active_addresses: y.active_addresses,
-      //     average_transaction_value: y.average_transaction_value,
-      //     current_supply: y.current_supply,
-      //     symbol: y.symbol,
-      //     transaction_count: y.transaction_count,
-      //     transaction_count_all_time: y.transaction_count_all_time
-      //   })
-      // );
-      bulkData.map((y) =>
-        dataArray.push({
-          x: y.time * 1000,
-          y: y.transaction_count * y.average_transaction_value
-        })
-      );
-    }
+    //this needs to be updated to time, active_addresses, average_transaction_value, current_supply, new_addresses,
+    // symbol, transaction_count, transaction_count_all_time
+    // bulkData.map((y) =>
+    //   dataArray.push({
+    //     time: y.time,
+    //     active_addresses: y.active_addresses,
+    //     average_transaction_value: y.average_transaction_value,
+    //     current_supply: y.current_supply,
+    //     symbol: y.symbol,
+    //     transaction_count: y.transaction_count,
+    //     transaction_count_all_time: y.transaction_count_all_time
+    //   })
+    // );
+    bulkData.map((y) =>
+      dataArray.push({
+        x: y.time * 1000,
+        y: y.transaction_count * y.average_transaction_value,
+      })
+    );
     this.setState({ chartData: dataArray });
     this.setState({ symbol: this.state.query });
   };
 
   handleInputChange = () => {
     this.setState({
-      query: this.search.value
+      query: this.search.value,
     });
   };
   render() {
-    const { chartData, query, addressData, symbol } = this.state;
+    const { chartData, query, addressData } = this.state;
 
     return (
       <div>
@@ -121,29 +118,29 @@ class Dashboard extends React.Component {
               symbols: [
                 {
                   proName: "BITSTAMP:ETHUSD",
-                  title: "ETH/USD"
+                  title: "ETH/USD",
                 },
                 {
                   proName: "BITSTAMP:BTCUSD",
-                  title: "BTC/USD"
+                  title: "BTC/USD",
                 },
                 {
                   proName: "BINANCE:BNBUSDT",
-                  title: "BNB/USDT"
+                  title: "BNB/USDT",
                 },
                 {
                   proName: "BINANCE:ADAUSD",
-                  title: "ADA/USD"
+                  title: "ADA/USD",
                 },
                 {
                   proName: "BINANCE:DOTUSDT",
-                  title: "DOT/USDT"
+                  title: "DOT/USDT",
                 },
                 {
                   proName: "UNISWAP:UNIUSDT",
-                  title: "UNI/USDT"
-                }
-              ]
+                  title: "UNI/USDT",
+                },
+              ],
             }}
           />
         </div>
@@ -159,8 +156,8 @@ class Dashboard extends React.Component {
                 studies: [
                   "MACD@tv-basicstudies",
                   "StochasticRSI@tv-basicstudies",
-                  "TripleEMA@tv-basicstudies"
-                ]
+                  "TripleEMA@tv-basicstudies",
+                ],
               }}
             />
           ) : (
@@ -187,8 +184,8 @@ class Dashboard extends React.Component {
                   this.setState({
                     addressData: {
                       time: new Date(datapoint.x).toLocaleDateString(),
-                      price: datapoint.y
-                    }
+                      price: datapoint.y,
+                    },
                   });
                   console.log(addressData);
                 }}
@@ -210,9 +207,9 @@ class Dashboard extends React.Component {
                     fill: "#ffffff",
                     fontWeight: 3,
                     fontSize: 8,
-                    position: "start"
+                    position: "start",
                   },
-                  title: { fill: "#ffffff" }
+                  title: { fill: "#ffffff" },
                 }}
               />
               <YAxis
@@ -228,9 +225,9 @@ class Dashboard extends React.Component {
                     fill: "#ffffff",
                     fontWeight: 3,
                     fontSize: 7,
-                    position: "start"
+                    position: "start",
                   },
-                  title: { fill: "#ffffff" }
+                  title: { fill: "#ffffff" },
                 }}
               />
             </FlexibleXYPlot>
@@ -241,7 +238,7 @@ class Dashboard extends React.Component {
                   interval: "1D",
                   colorTheme: "dark",
                   width: "100%",
-                  symbol: query + "USD"
+                  symbol: query + "USD",
                 }}
               />
             ) : (
@@ -254,7 +251,7 @@ class Dashboard extends React.Component {
                 widgetConfig={{
                   colorTheme: "dark",
                   width: "100%",
-                  symbol: query + "USD"
+                  symbol: query + "USD",
                 }}
               />
             ) : (
@@ -301,17 +298,17 @@ const Chart = (props) => {
   );
 };
 
-const Leader = (props) => {
-  return (
-    <div className="leaderItem">
-      <a href={props.url} target="#">
-        <img src={props.logo} alt={props.symbol} className="logo" />
-      </a>
-      <p className="leaderText">{props.symbol}</p>
-      <p className="leaderText">{props.price}</p>
-    </div>
-  );
-};
+// const Leader = (props) => {
+//   return (
+//     <div className="leaderItem">
+//       <a href={props.url} target="#">
+//         <img src={props.logo} alt={props.symbol} className="logo" />
+//       </a>
+//       <p className="leaderText">{props.symbol}</p>
+//       <p className="leaderText">{props.price}</p>
+//     </div>
+//   );
+// };
 
 const HoverHint = ({ active, data, query, symbol }) => (
   <div className={`nonActive ${active ? "active" : ""}`}>
